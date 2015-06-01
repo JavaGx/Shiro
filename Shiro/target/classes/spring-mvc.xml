@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:cache="http://www.springframework.org/schema/cache" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+	http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd 
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.2.xsd 
+	http://www.springframework.org/schema/cache 
+	http://www.springframework.org/schema/cache/spring-cache-3.2.xsd ">
+	
+		<context:component-scan base-package="cn.gx.controller"></context:component-scan>
+		
+		<bean id="objectMapper" class="org.codehaus.jackson.map.ObjectMapper"></bean>
+		
+		<mvc:annotation-driven>
+			<mvc:message-converters><!-- springmvc的自带的json转换工具，支持@ReponseBody -->
+				<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+					<property name="supportedMediaTypes" value="application/json;charset=UTF-8"></property>
+				</bean>
+			</mvc:message-converters>
+		</mvc:annotation-driven>
+		
+		<!-- 跟路径时，找/index视图 -->
+		<mvc:view-controller path="/" view-name="/index"/>
+		 
+		<mvc:resources location="/style/" mapping="/style/**"/>
+		<mvc:resources location="*.html" mapping="*.html"/>
+		
+		<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+			<property name="suffix" value=""></property>
+			<property name="prefix" value=""></property>
+			<property name="order" value="1"></property>
+		</bean>
+		
+		<bean id="freemarkerConfig" class="cn.gx.shiro.tag.ShiroFreemarkerTag">
+		   <property name="templateLoaderPath"><value>/WEB-INF/html/</value></property>
+		   <property name="freemarkerSettings">
+	        <props>
+	            <prop key="defaultEncoding">UTF-8</prop>
+	            <!-- 处理null值 ，但有的属性用法会做改变-->
+	            <prop key="classic_compatible">true</prop>
+	        </props>
+	    </property>  
+		 </bean>
+		
+		<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+			<property name="order" value="0"></property>
+			<property name="suffix" value=".html"></property>
+			<property name="contentType" value="text/html;charset=UTF-8" />  
+	        <!-- 此变量值为pageContext.request, 页面使用方法：rc.contextPath -->  
+	        <property name="requestContextAttribute" value="rc" />  
+		</bean>
+		
+		<!-- shiro注解的spring配置,开启注解 -->
+		<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"></bean>
+		
+		<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+			<property name="securityManager" ref="securityManager"></property>
+		</bean>
+		
+		<!-- 防止页面出现错误信息 -->
+		<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+			<property name="exceptionMappings">
+				<props>
+					<prop key="org.apache.shiro.authz.UnauthenticatedException">/system/error</prop>
+				</props>
+			</property>
+		</bean>
+</beans> 

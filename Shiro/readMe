@@ -1,0 +1,10 @@
+﻿项目特点：
+	1、freemarker视图，不需要像jsp那样编译成servlet再输出
+	2、mysql procedure的使用，只需要编译一次就能调用
+	3、shiro控制权限，轻量级框架
+	4、springmvc控制层，方便开发
+	5、Excel导出数据
+	6、quartz任务调度(待完善)
+	7、ehcache使用缓存提高访问速度
+	8、邮件推送
+	9、负载均衡(待开发)

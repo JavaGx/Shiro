@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+	
+	<!-- 线程执行器，任务注册 -->
+	<bean id="executor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="10" />
+		<property name="maxPoolSize" value="100" />
+		<property name="queueCapacity" value="500" />
+	</bean>
+	
+	<!-- <bean id="myQuartz" class="cn.gx.quartz.MyQuartz"></bean>
+	
+	<bean id="jobDetailFactory" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="concurrent" value="false"></property>一个任务完成才开始下一个
+		<property name="targetObject" ref="myQuartz"></property>
+		<property name="targetMethod" value="service"></property>
+	</bean>
+	
+	
+	触发器
+	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="jobDetailFactory"></property>
+		从10秒开始，每分钟执行一次 
+		<property name="cronExpression" value="10 0/1 * * * ?"></property>
+	</bean> -->
+	
+	<!-- 调度器 -->
+	<bean id="schedule" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<!-- <property name="triggers">
+			<list>
+				<ref bean="cronTrigger"/>
+			</list>
+		</property> -->
+		<property name="taskExecutor" ref="executor"></property>
+	</bean>
+</beans>

@@ -1,0 +1,33 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户列表</title>
+</head>
+<body>
+	<center>
+		<#assign pageNum=3>
+		<#assign Records=total>
+		<#assign pages=(Records/pageNum+1)>
+		<#assign p=1..pages>
+		<table border="1" align="center">
+			<caption>
+				<font size="20px;">用户列表</font>
+			</caption>
+			<#list userList as user>
+				<tr>
+					<td width="100">${user.id}</td>
+					<td width="200">${user.username}</td>
+				</tr>
+			</#list>
+			<tr>
+				<td colspan="2">
+					<#list p as page>
+						<a href="${rc.contextPath}/user/userList.do?beginIndex=${(page-1)*pageNum}&endIndex=${(page==pages)?string((Records-1),(page*(pageNum-1)))}">${page}</a>
+					</#list>
+				</td>
+			</tr>
+		</table>
+		<a href="${rc.contextPath}/user/downloadUserInfo.do">下载用户信息</a>
+	</center>
+</body>
+</html>

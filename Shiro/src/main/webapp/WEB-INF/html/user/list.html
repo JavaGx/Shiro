@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="${rc.contextPath}/style/css/easyui.css" type="text/css">
+<link rel="stylesheet" href="${rc.contextPath}/style/css/icon.css" type="text/css">
+<script type="text/javascript" src="${rc.contextPath}/style/js/jquery.min.js"></script>
+<script type="text/javascript" src="${rc.contextPath}/style/js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="${rc.contextPath}/style/js/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript">
+$(function(){
+	$.ajax({
+		url:"${rc.contextPath}/user/firstPage.do",
+		type:"post",
+		dataType:"json",
+		success:function(json){
+			var jsonobj=$.parseJSON(json);
+			$("#table").datagrid({
+				data:jsonobj,
+				pagination:true,
+				pagePosition:'top',
+				pageNumber:1,
+				pageSize:6,
+				pageList:[6,12,18,24] 
+			});
+		},
+		error:function(data){
+			alert("error");
+		}
+	});
+	
+})
+	
+	function deleteUsers(url){
+		var rows=$("#table").datagrid("getSelections");
+		if(rows.length==0){
+			$.messager.alert('来自网页的消息','你还没选中！','info');
+		}else{
+			$.messager.confirm('来自网页的消息','确定删除所选用户吗？',function(r){
+			if(r){
+					var ids=[];
+					$.each(rows,function(i,data){
+						ids.push(data.id);
+					});
+					location.href=url+"?ids="+ids;
+				}
+			});
+		}
+	}
+	
+	/*if(top.location != self.location){
+		top.location=self.location; 
+	}*/
+	function downExcel(url){
+		location.href=url;
+	}
+	
+	function updateUsers(url){
+		var rows=$("#table").datagrid("getSelections");
+		if(rows.length==0){
+			$.messager.alert('来自网页的消息','你还没选中！','info');
+		}
+		else if(rows.length!=1){
+			$.messager.alert('来自网页的消息','只能选中1行！','info');
+		}else{
+			$.messager.confirm('来自网页的消息','确定删除所选用户吗？',function(r){
+			if(r){
+					$.each(rows,function(i,data){
+						var Id=data.id						
+						location.href=url+"?id="+Id;
+					});
+				}
+			});
+		}
+	}
+</script>
+</head>
+<body topmargin="0" leftmargin="0" rightmargin="0">
+	<div class="easyui-tabs">
+		<div title="全部用户">
+			<div style="padding: 5px">
+				<a href="${rc.contextPath}/user/addUI.do" class="easyui-linkbutton" data-options="iconCls:'icon-add'">添加</a>
+				<a onclick="deleteUsers('${rc.contextPath}/user/delete.do')" class="easyui-linkbutton" data-options="iconCls:'icon-remove'">删除</a>
+				<a onclick="updateUsers('${rc.contextPath}/user/editUI.do')" class="easyui-linkbutton" data-options="iconCls:'icon-edit'">修改</a>
+				<a onclick="downExcel('${rc.contextPath}/user/downloadUserInfo.do')" class="easyui-linkbutton" data-options="iconCls:'icon-edit'">下载用户信息</a><br/>
+			</div>
+			<table id="table" class="easyui-datagrid" data-options="fitColumns:false">
+				<thead>
+					<tr>
+						<th data-options="title:'编号',field:'id',width:'18%',align:'center'"></th>
+						<th data-options="title:'用户名',field:'username',width:'18%',align:'center'"></th>
+						<th data-options="title:'身份',field:'roles',width:'18%',align:'center',formatter:function(value,row,index){
+							if(value!=null){
+								return value[0].description;
+							}else{
+								return value;
+							}
+						}"></th>
+						<th data-options="title:'E-mail',field:'email',width:'18%',align:'center'"></th>
+					</tr>
+				</thead>
+						
+				</tr>
+			</table>
+		</div>
+	</div>
+</body>
+</html>

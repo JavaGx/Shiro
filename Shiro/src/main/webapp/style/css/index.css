@@ -1,0 +1,20 @@
+@CHARSET "UTF-8";
+
+.user{
+	height: 30px;
+	line-height: 30px;
+	
+}
+.user a{
+	text-decoration: none;
+	font-style: inherit;
+}
+.user a:LINK{
+	color: black;
+}
+.user a:VISITED{
+	color: black;
+}
+.user:HOVER {
+	background: #E0ECFF;
+}

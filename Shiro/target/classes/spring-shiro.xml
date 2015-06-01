@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+       
+       <bean id="myRealm" class="cn.gx.shiro.realm.MyRealm">
+       		<property name="cacheManager" ref="shiroCacheManager"></property>
+			<property name="cachingEnabled" value="true"></property>
+			<property name="authorizationCachingEnabled" value="true"></property>
+			<property name="authorizationCacheName" value="authorizationCache"></property>
+			<!-- 默认为false,其它：authenrizationCachingEnabled、cachingEnabled都为true-->
+			<property name="authenticationCachingEnabled" value="true"></property>
+			<property name="authenticationCacheName" value="authenticationCache"></property>
+		</bean>
+       
+       <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+       		<property name="realm" ref="myRealm"></property>
+       		<property name="cacheManager" ref="shiroCacheManager"></property>
+       		<property name="sessionManager">
+       			<bean class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+       				<property name="sessionDAO" ref="sessionDAO"></property>
+       				<property name="globalSessionTimeout" value="600000"></property>
+       				<property name="sessionValidationInterval" value="60000"></property>
+       			</bean>
+       		</property>
+       </bean>
+       
+       <bean id="formLoginFilter" class="cn.gx.shiro.filter.FormLoginFilter"></bean>
+       
+       <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+       		<property name="securityManager" ref="securityManager"></property>
+       		<property name="loginUrl" value="/login.html"></property>
+       		<property name="successUrl" value="/register.html"></property>
+       		<property name="unauthorizedUrl" value="/unauthorized.html"></property>
+       		<property name="filters">
+       			<map>
+       				<entry key="authc" value-ref="formLoginFilter">       				</entry>
+       			</map>
+       		</property>
+       		<property name="filterChainDefinitions">
+       			<value>
+       				/register.html=anon
+       				/style/**=anon
+       				/user/showRoles.do=anon
+       				/user/register.do=anon
+       				/user/logout.do=anon
+       				/**=authc
+       			</value>
+       		</property>
+       </bean>
+       
+       
+       <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"></bean>
+       
+       <bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+       		<property name="cacheManager" ref="ehCacheManagerFactory"></property>
+       </bean>
+       
+       <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO"></bean>
+       
+</beans>
